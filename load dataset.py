@@ -1,117 +1,194 @@
+# =========================================================
+# TASK 2: DOWNLOAD AND EXPLORE E-COMMERCE DATASET
+# Complete Code Covering All Subtasks
+# =========================================================
+
+# STEP 1 — Import Libraries
 import pandas as pd
 
-# Load dataset
+# =========================================================
+# STEP 2 — Load Dataset
+# =========================================================
+
+# Replace file name if your CSV name is different
 df = pd.read_csv("Sample - Superstore.csv", encoding='latin1')
 
-# Show first 5 rows
+print("Dataset Loaded Successfully!\n")
+
+# =========================================================
+# STEP 3 — Display First Few Rows
+# =========================================================
+
+print("FIRST 5 ROWS OF DATASET")
 print(df.head())
 
-# Show columns
+# =========================================================
+# STEP 4 — Explore Dataset Structure
+# =========================================================
+
+# Dataset Shape
+print("\nDATASET SHAPE")
+print(df.shape)
+
+# Rows and Columns separately
+print("\nTOTAL ROWS:", df.shape[0])
+print("TOTAL COLUMNS:", df.shape[1])
+
+# Column Names
+print("\nCOLUMN NAMES")
 print(df.columns)
 
-# Convert dates
-df['Order Date'] = pd.to_datetime(df['Order Date'])
-df['Ship Date'] = pd.to_datetime(df['Ship Date'])
+# Data Types
+print("\nDATA TYPES")
+print(df.dtypes)
 
-# Dataset info
+# Dataset Information
+print("\nDATASET INFORMATION")
 print(df.info())
 
-# Missing values
+# =========================================================
+# STEP 5 — Check Important Columns
+# =========================================================
+
+print("\nIMPORTANT COLUMNS CHECK")
+
+important_columns = [
+    'Order ID',
+    'Order Date',
+    'Customer ID',
+    'Sales',
+    'Quantity',
+    'Profit',
+    'Category',
+    'Region'
+]
+
+for col in important_columns:
+    if col in df.columns:
+        print(f"{col} → Present")
+    else:
+        print(f"{col} → Not Present")
+
+# =========================================================
+# STEP 6 — Identify Missing Values
+# =========================================================
+
+print("\nMISSING VALUES")
 print(df.isnull().sum())
 
-# Duplicate rows
-print("Duplicates:", df.duplicated().sum())
+# Total Missing Values
+print("\nTOTAL MISSING VALUES:")
+print(df.isnull().sum().sum())
 
-# Dataset shape
-print("Shape:", df.shape)
+# =========================================================
+# STEP 7 — Identify Duplicate Records
+# =========================================================
+
+print("\nDUPLICATE RECORDS")
+duplicates = df.duplicated().sum()
+
+print("Total Duplicate Rows:", duplicates)
+
+# =========================================================
+# STEP 8 — Convert Date Columns
+# =========================================================
+
+print("\nCONVERTING DATE COLUMNS")
+
+df['Order Date'] = pd.to_datetime(
+    df['Order Date'],
+    errors='coerce'
+)
+
+df['Ship Date'] = pd.to_datetime(
+    df['Ship Date'],
+    errors='coerce'
+)
+
+print("Date Conversion Completed!")
+
+# Check Data Types Again
+print("\nUPDATED DATA TYPES")
 print(df.dtypes)
+
+# =========================================================
+# STEP 9 — Basic Statistical Summary
+# =========================================================
+
+print("\nSTATISTICAL SUMMARY")
+print(df.describe())
+
+# =========================================================
+# STEP 10 — Identify Key Columns for Analysis
+# =========================================================
+
+print("\nKEY COLUMNS FOR ANALYSIS")
+
+# Sales Columns
+sales_columns = ['Sales', 'Profit', 'Quantity', 'Discount']
+
+# Customer Columns
+customer_columns = ['Customer ID', 'Customer Name', 'Segment']
+
+# Product Columns
+product_columns = ['Category', 'Sub-Category', 'Product Name']
+
+# Geographic Columns
+geo_columns = ['Country', 'City', 'State', 'Region']
+
+print("\nSales Related Columns:")
+print(sales_columns)
+
+print("\nCustomer Related Columns:")
+print(customer_columns)
+
+print("\nProduct Related Columns:")
+print(product_columns)
+
+print("\nGeographic Columns:")
+print(geo_columns)
+
+# =========================================================
+# STEP 11 — Sample Exploratory Analysis
+# =========================================================
+
+# Total Sales
+print("\nTOTAL SALES")
 print(df['Sales'].sum())
-print(df.groupby('Region')['Sales'].sum())
-print(df.groupby('Category')['Profit'].sum())
-print("Total Sales:", df['Sales'].sum())
-print("Total Profit:", df['Profit'].sum())
-print("Total Orders:", df['Order ID'].nunique())
-print("Total Customers:", df['Customer ID'].nunique())
 
-monthly_sales = df.groupby(
-    df['Order Date'].dt.month
-)['Sales'].sum()
+# Total Profit
+print("\nTOTAL PROFIT")
+print(df['Profit'].sum())
 
-print(monthly_sales)
-yearly_sales = df.groupby(
-    df['Order Date'].dt.year
-)['Sales'].sum()
-
-print(yearly_sales)
-
-print(df.groupby('Region')['Sales'].sum())
-print(df.groupby('Region')['Sales'].sum())
+# Sales by Category
+print("\nSALES BY CATEGORY")
 print(df.groupby('Category')['Sales'].sum())
-print(df.groupby('Category')['Profit'].sum())
-print(df.groupby('Sub-Category')['Sales'].sum())
-print(
-    df.groupby('Sub-Category')['Sales']
-    .sum()
-    .sort_values(ascending=False)
-)
-print(
-    df.groupby('Customer Name')['Sales']
-    .sum()
-    .sort_values(ascending=False)
-    .head(10)
-)
-print(
-    df['Customer ID']
-    .value_counts()
-    .head(10)
-)
-print(
-    df.groupby('Discount')['Profit']
-    .mean()
-)
-import matplotlib.pyplot as plt
 
-monthly_sales.plot(kind='bar')
+# Profit by Region
+print("\nPROFIT BY REGION")
+print(df.groupby('Region')['Profit'].sum())
 
-plt.title("Monthly Sales")
-plt.xlabel("Month")
-plt.ylabel("Sales")
+# =========================================================
+# STEP 12 — Save Explored Dataset
+# =========================================================
 
-plt.show()
-category_sales = df.groupby('Category')['Sales'].sum()
+df.to_csv("explored_superstore.csv", index=False)
 
-category_sales.plot(kind='bar')
+print("\nDATASET SAVED SUCCESSFULLY!")
+print("File Name: explored_superstore.csv")
 
-plt.title("Sales by Category")
-plt.xlabel("Category")
-plt.ylabel("Sales")
+# =========================================================
+# STEP 13 — Final Observations
+# =========================================================
 
-plt.show()
-df['Category'] = df['Category'].str.strip().str.title()
+print("\nFINAL OBSERVATIONS")
 
-df['Sub-Category'] = df['Sub-Category'].str.strip().str.title()
-
-df['Region'] = df['Region'].str.strip().str.title()
-print(df[df['Sales'] < 0])
-df = df[df['Sales'] >= 0]
-df = df[df['Quantity'] > 0]
-Q1 = df['Sales'].quantile(0.25)
-Q3 = df['Sales'].quantile(0.75)
-
-IQR = Q3 - Q1
-
-lower = Q1 - 1.5 * IQR
-upper = Q3 + 1.5 * IQR
-
-print(lower, upper)
-df = df[(df['Sales'] >= lower) & (df['Sales'] <= upper)]
-df['Year'] = df['Order Date'].dt.year
-df['Month'] = df['Order Date'].dt.month
-df['Day'] = df['Order Date'].dt.day_name()
-df['Delivery Days'] = (
-    df['Ship Date'] - df['Order Date']
-).dt.days
-df.to_csv("cleaned_superstore.csv", index=False)
-print(df.head())
-print(df.info())
+print("""
+1. Dataset successfully loaded and explored.
+2. Dataset contains sales, customer, product, and regional data.
+3. Date columns converted into datetime format.
+4. Missing values and duplicate records identified.
+5. Dataset ready for data cleaning and preprocessing.
+6. Key business metrics identified for analysis.
+""")
 
